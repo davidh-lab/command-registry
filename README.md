@@ -1,39 +1,41 @@
-# Command Registry
+# Command Registry — Fase 2
 
-Dit repository bevat de slash-commanddefinities voor mijn Custom GPT.
+Dit pakket bevat de API-wrapper voor het externe commandregister.
 
-## Bron van waarheid
+## Bestanden
 
-`registry/commands.json` is de leidende bron voor commanddefinities.
+- `registry/commands.json` — bron van waarheid.
+- `api/worker.js` — Cloudflare Worker API-wrapper.
+- `api/openapi.yaml` — schema voor Custom GPT Actions.
+- `api/wrangler.toml` — optionele Wrangler-configuratie.
+- `tests/action-testcases.json` — minimale API-testset.
 
-## Leesbare documentatie
+## Eerst aanpassen
 
-`registry/command-library.md` is de mensleesbare versie van de commandbibliotheek.
+1. Publiceer `registry/commands.json` op een HTTPS-URL.
+2. Vervang in `api/worker.js`:
 
-## Fallback
+```js
+const COMMANDS_JSON_URL = "https://example.com/registry/commands.json";
+```
 
-`registry/fallback-knowledge-instructie.md` beschrijft hoe de Custom GPT tijdelijke Knowledge fallback gebruikt zolang Actions niet volledig leidend zijn.
+3. Vervang in `api/openapi.yaml`:
 
-## Validatie
+```yaml
+servers:
+  - url: https://jouw-worker-url.workers.dev
+```
 
-`registry/commands.schema.json` beschrijft de verwachte structuur van `commands.json`.
+## Routes
 
-`registry/validation-summary.json` bevat de laatste validatie-uitkomst.
+- `GET /commands`
+- `GET /commands/{command}`
+- `POST /commands/batch`
 
-## Fase 2-doel
+## Doel
 
-In Fase 2 wordt dit register via een kleine API beschikbaar gemaakt voor de Custom GPT Actions:
+Na deploy kan de Custom GPT deze API gebruiken via Actions:
 
+- `listCommands`
 - `getCommand`
 - `getCommands`
-- `listCommands`
-
-## Onderhoudsregel
-
-Wijzig commandinhoud voortaan eerst in `registry/commands.json`.
-
-Daarna:
-1. valideer de structuur;
-2. werk `registry/command-library.md` bij;
-3. update `CHANGELOG.md`;
-4. deploy de API opnieuw.

@@ -1,0 +1,195 @@
+openapi: 3.1.0
+info:
+  title: Command Registry API
+  version: 1.0.0
+  description: API voor het ophalen van slash-commanddefinities voor een Custom GPT.
+servers:
+  - url: https://jouw-worker-url.workers.dev
+paths:
+  /commands:
+    get:
+      operationId: listCommands
+      summary: List available slash commands
+      description: Geeft een lijst van beschikbare slash-commands terug.
+      parameters:
+        - name: active_only
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: Alleen actieve commands tonen.
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter op commandcategorie.
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Zoekterm voor commandnaam, titel, intent of categorie.
+      responses:
+        "200":
+          description: Commandlijst.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  registry_version:
+                    type:
+                      - string
+                      - "null"
+                  commands:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CommandSummary"
+  /commands/{command}:
+    get:
+      operationId: getCommand
+      summary: Get one slash command
+      description: Haalt één commanddefinitie op. Gebruik command met of zonder slash.
+      parameters:
+        - name: command
+          in: path
+          required: true
+          schema:
+            type: string
+          example: analyse
+        - name: include_inactive
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: Ook inactive/deprecated commands teruggeven.
+        - name: include_examples
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: Voorbeelden opnemen in de response.
+      responses:
+        "200":
+          description: Command gevonden.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommandLookupResult"
+        "404":
+          description: Command niet gevonden.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommandLookupResult"
+  /commands/batch:
+    post:
+      operationId: getCommands
+      summary: Get multiple slash commands
+      description: Haalt meerdere commanddefinities tegelijk op en geeft een uitvoerplan terug.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - commands
+              properties:
+                commands:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - /kritisch
+                    - /verbeterplan
+                include_inactive:
+                  type: boolean
+                  default: false
+                include_examples:
+                  type: boolean
+                  default: true
+                resolve_combination:
+                  type: boolean
+                  default: true
+      responses:
+        "200":
+          description: Batch command lookup result.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  found_all:
+                    type: boolean
+                  commands:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  missing:
+                    type: array
+                    items:
+                      type: string
+                  execution_plan:
+                    $ref: "#/components/schemas/ExecutionPlan"
+                  registry_version:
+                    type:
+                      - string
+                      - "null"
+components:
+  schemas:
+    CommandSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        slash:
+          type: string
+        title:
+          type:
+            - string
+            - "null"
+        category:
+          type:
+            - string
+            - "null"
+        active:
+          type: boolean
+        deprecated:
+          type: boolean
+        replacement:
+          type:
+            - string
+            - "null"
+        intent:
+          type:
+            - string
+            - "null"
+    CommandLookupResult:
+      type: object
+      properties:
+        found:
+          type: boolean
+        command:
+          type:
+            - object
+            - "null"
+          additionalProperties: true
+        registry_version:
+          type:
+            - string
+            - "null"
+    ExecutionPlan:
+      type: object
+      properties:
+        order:
+          type: array
+          items:
+            type: string
+        description:
+          type: string

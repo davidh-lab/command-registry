@@ -1,0 +1,39 @@
+[
+  {
+    "name": "list active commands",
+    "method": "GET",
+    "path": "/commands",
+    "expected": ["registry_version", "commands"]
+  },
+  {
+    "name": "get analyse command",
+    "method": "GET",
+    "path": "/commands/analyse",
+    "expected": ["found:true", "command.slash:/analyse"]
+  },
+  {
+    "name": "get analyse command with slash encoded",
+    "method": "GET",
+    "path": "/commands/%2Fanalyse",
+    "expected": ["found:true", "command.slash:/analyse"]
+  },
+  {
+    "name": "get combined commands",
+    "method": "POST",
+    "path": "/commands/batch",
+    "body": { "commands": ["/kritisch", "/verbeterplan"] },
+    "expected": ["found_all:true", "execution_plan.order"]
+  },
+  {
+    "name": "deprecated feedback command",
+    "method": "GET",
+    "path": "/commands/feedback?include_inactive=true",
+    "expected": ["found:true", "command.active:false", "command.replacement:/terugkoppeling"]
+  },
+  {
+    "name": "unknown command",
+    "method": "GET",
+    "path": "/commands/ontrafel",
+    "expected": ["status:404", "found:false"]
+  }
+]
