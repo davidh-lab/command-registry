@@ -1,0 +1,33 @@
+name: Validate command registry
+
+on:
+  push:
+    paths:
+      - "registry/commands.json"
+      - "scripts/**"
+      - "package.json"
+      - ".github/workflows/validate-registry.yml"
+  pull_request:
+    paths:
+      - "registry/commands.json"
+      - "scripts/**"
+      - "package.json"
+      - ".github/workflows/validate-registry.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate registry
+        run: npm run validate
+
+      - name: Generate Markdown
+        run: npm run generate:md

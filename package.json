@@ -1,0 +1,12 @@
+{
+  "name": "command-registry",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-commands.mjs",
+    "generate:md": "node scripts/generate-command-library.mjs",
+    "test:api": "node scripts/test-api.mjs",
+    "check": "npm run validate && npm run generate:md"
+  }
+}
