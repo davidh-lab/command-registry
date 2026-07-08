@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Command Registry Schema",
+  "type": "object",
+  "required": [
+    "registry_version",
+    "library_name",
+    "language",
+    "commands"
+  ],
+  "properties": {
+    "registry_version": {
+      "type": "string"
+    },
+    "library_name": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "slash",
+          "active",
+          "category",
+          "intent",
+          "output_contract",
+          "execution_instructions",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slash": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "category": {
+            "type": "string"
+          },
+          "intent": {
+            "type": "string"
+          },
+          "output_contract": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "execution_instructions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
