@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API voor het ophalen van slash-commanddefinities voor een Custom GPT.
 servers:
-  - url: https://jouw-worker-url.workers.dev
+  - url: https://command-registry-api.davidhubneraarts2.workers.dev
 paths:
   /commands:
     get:
