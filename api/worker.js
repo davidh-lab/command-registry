@@ -7,7 +7,7 @@
 // 3. Deploy deze Worker.
 // 4. Test GET /commands, GET /commands/analyse en POST /commands/batch.
 
-const COMMANDS_JSON_URL = "https://github.com/davidh-lab/command-registry/blob/main/registry/commands.json";
+const COMMANDS_JSON_URL = "https://raw.githubusercontent.com/davidh-lab/command-registry/main/registry/commands.json";
 const REGISTRY_CACHE_SECONDS = 60;
 
 function json(data, status = 200) {
